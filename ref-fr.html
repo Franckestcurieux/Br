@@ -21,7 +21,7 @@
   --switcher-h:48px; --nav-h:48px; --ch-h:155px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}body,#book-fiches,#book-am{overflow-x:hidden;}
+html{scroll-behavior:smooth;}
 body{font-family:'Crimson Pro',Georgia,serif;background:var(--cream);color:var(--text);font-size:18px;line-height:1.75;}
 
 /* ============================================================
@@ -177,7 +177,7 @@ h4{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;co
 /* ============================================================
    TABLES (shared)
    ============================================================ */
-.tw{overflow-x:auto;margin:1.1rem 0;-webkit-overflow-scrolling:touch;}
+.tw{overflow-x:auto;margin:1.1rem 0;-webkit-overflow-scrolling:touch;max-width:100%;}
 table.ctab{width:100%;border-collapse:collapse;font-size:.88rem;}
 table.ctab th{background:var(--midnight);color:var(--gold);font-family:'Cormorant Garamond',serif;font-weight:600;padding:.6rem .85rem;text-align:left;font-size:.82rem;letter-spacing:.04em;}
 table.ctab td{padding:.5rem .85rem;border-bottom:1px solid var(--border);vertical-align:top;}
@@ -195,7 +195,7 @@ tr.even td, table.ctab tr:nth-child(even) td{background:rgba(245,240,232,.5);}
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
 }
 .ch-bg{
-  position:absolute;inset:-40px 0;will-change:transform;transform:translateZ(0);
+  position:absolute;inset:-40px 0;
   opacity:.65;transition:opacity .4s ease;
 }
 .ch-header.opaque .ch-bg{opacity:1;}
@@ -278,6 +278,8 @@ footer span{color:var(--gold);}
   .ch-content{gap:.9rem;padding:0 1rem;}
   .ch-btn{width:1.85rem;height:1.85rem;}
   .ch-inner,.am-section{padding:2rem 1.2rem;}
+  .ctab,.cg table{font-size:.75rem;}
+  .tw{font-size:.75rem;}
   .alt-bg > .am-inner{padding:2rem 1.2rem;}
   body{padding:0;}
   h2{font-size:1.75rem;}
@@ -1459,6 +1461,14 @@ window.addEventListener('resize', _onScroll, {passive: true});
 
 // Init
 updateAll();
+
+/* Masquer la navigation interne quand chargé dans un iframe */
+if (window.self !== window.top) {
+  var bs = document.getElementById('book-switcher');
+  if (bs) bs.style.display = 'none';
+  /* Réduire le padding-top des livres compensé par la barre */
+  document.documentElement.style.setProperty('--switcher-h', '0px');
+}
 </script>
 </body>
 </html>
