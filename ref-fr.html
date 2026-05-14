@@ -18,7 +18,7 @@
   --red:#9b1d20; --red-light:#fde8e8;
   --blue:#1a5e7a; --blue-light:#d0eaf5;
   --border:#ddd3c0;
-  --switcher-h:48px; --nav-h:36px; --ch-h:120px;
+  --switcher-h:0px; --nav-h:36px; --ch-h:120px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -1476,7 +1476,15 @@ function updateActiveNav(navSel, anchorSel, offset){
     const href = a.getAttribute('href');
     const active = href === '#' + current;
     a.classList.toggle('active', active);
-    if(active) a.scrollIntoView({inline:'center', behavior:'smooth', block:'nearest'});
+    if(active) {
+      /* Centrer l'item actif dans la nav — scrollIntoView non fiable en iframe iOS */
+      var navEl = nav;
+      var aLeft = a.offsetLeft;
+      var aWidth = a.offsetWidth;
+      var navWidth = navEl.offsetWidth;
+      var target = aLeft - (navWidth / 2) + (aWidth / 2);
+      navEl.scrollTo({left: Math.max(0, target), behavior: 'smooth'});
+    }
   });
 }
 
