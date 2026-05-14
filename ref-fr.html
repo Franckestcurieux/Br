@@ -18,7 +18,7 @@
   --red:#9b1d20; --red-light:#fde8e8;
   --blue:#1a5e7a; --blue-light:#d0eaf5;
   --border:#ddd3c0;
-  --switcher-h:48px; --nav-h:36px; --ch-h:105px;
+  --switcher-h:48px; --nav-h:36px; --ch-h:120px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -128,12 +128,12 @@ h2 em{font-style:italic;color:var(--gold);}
   position:sticky;
   top:calc(var(--switcher-h) + var(--nav-h));
   z-index:100;
-  height:var(--ch-h);
+  min-height:var(--ch-h);
   overflow:hidden;
   display:flex;
-  align-items:flex-end;
+  align-items:center;
   gap:1.2rem;
-  padding:0 1.5rem 1rem;
+  padding:1rem 1.5rem;
   backdrop-filter:blur(2px);
   -webkit-backdrop-filter:blur(2px);
 }
@@ -307,7 +307,7 @@ footer span{color:var(--gold);}
    RESPONSIVE
    ============================================================ */
 @media(max-width:640px){
-  :root{--switcher-h:44px;--nav-h:32px;--ch-h:88px;}
+  :root{--switcher-h:44px;--nav-h:32px;--ch-h:110px;}
   .ch-num{font-size:2.6rem;}
   .ch-content{gap:.9rem;padding:0 1rem;}
   .ch-btn{width:1.85rem;height:1.85rem;}
@@ -1509,8 +1509,8 @@ document.querySelectorAll('#book-am .am-sn').forEach(function(sn) {
 
 updateAll();
 
-/* Masquer la navigation interne quand chargé depuis l'app (?iframe=1) */
-if (new URLSearchParams(location.search).get('iframe') === '1') {
+/* Masquer la nav interne via postMessage depuis l'app parente */
+function _hideAppNav() {
   var bs = document.getElementById('book-switcher');
   if (bs) bs.style.display = 'none';
   document.documentElement.style.setProperty('--switcher-h', '0px');
@@ -1518,6 +1518,9 @@ if (new URLSearchParams(location.search).get('iframe') === '1') {
     b.style.display = 'none';
   });
 }
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.action === 'hideNav') _hideAppNav();
+});
 </script>
 </body>
 </html>
