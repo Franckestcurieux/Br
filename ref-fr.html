@@ -1509,12 +1509,11 @@ document.querySelectorAll('#book-am .am-sn').forEach(function(sn) {
 
 updateAll();
 
-/* Masquer la navigation interne quand chargé dans un iframe */
-if (window.self !== window.top) {
+/* Masquer la navigation interne quand chargé depuis l'app (?iframe=1) */
+if (new URLSearchParams(location.search).get('iframe') === '1') {
   var bs = document.getElementById('book-switcher');
   if (bs) bs.style.display = 'none';
   document.documentElement.style.setProperty('--switcher-h', '0px');
-  /* Masquer les boutons AM redondants dans les chapitres */
   document.querySelectorAll('.ch-btn.xbtn').forEach(function(b) {
     b.style.display = 'none';
   });
