@@ -1383,6 +1383,7 @@ function switchBook(book){
   requestAnimationFrame(() => {
     window.scrollTo(0, savedScroll[book]);
     updateAll();
+    updateNavs();
   });
 }
 
@@ -1494,10 +1495,12 @@ function initNavObservers() { /* remplacé par scroll direct */ }
 
 
 
-window.addEventListener('scroll', function() {
-  updateAll();
-  updateNavs();
-}, {passive: true});
+/* Écouter scroll ET touch sur window ET document (iOS iframe) */
+['scroll', 'touchmove', 'touchend'].forEach(function(ev) {
+  window.addEventListener(ev, updateNavs, {passive: true});
+  document.addEventListener(ev, updateNavs, {passive: true});
+});
+window.addEventListener('scroll', updateAll, {passive: true});
 window.addEventListener('resize', function() {
   updateAll();
   updateNavs();
