@@ -87,7 +87,7 @@ body{font-family:'Crimson Pro',Georgia,serif;background:var(--cream);color:var(-
 /* ============================================================
    BOOK CONTAINER
    ============================================================ */
-.book{display:none;}.book.visible{display:block;padding-top:var(--nav-h);}
+.book{display:none;}.book.visible{display:block;}
 
 
 /* ============================================================
@@ -1457,61 +1457,51 @@ function updateAll(){
     bg.style.transform = 'translate3d(0,' + (progress * speed) + 'px,0)';
   });
 
-  /* Nav updates gérées par IntersectionObserver — voir initNavObservers() */
+  /* Nav mise à jour dans updateAll() via scroll direct */
 }
 
-function setNavActive(navSel, anchorId) {
-  var nav = document.querySelector(navSel);
-  if (!nav) return;
-  nav.querySelectorAll('a').forEach(function(a) {
-    var active = a.getAttribute('href') === '#' + anchorId;
-    a.classList.toggle('active', active);
-    if (active) {
-      /* Centrer l'item dans la barre — calcul getBoundingClientRect fiable iOS */
-      var aRect   = a.getBoundingClientRect();
-      var navRect = nav.getBoundingClientRect();
-      var relLeft = aRect.left - navRect.left;
-      var target  = nav.scrollLeft + relLeft - nav.offsetWidth / 2 + aRect.width / 2;
-      nav.scrollLeft = Math.max(0, Math.round(target));
-    }
-  });
-}
+function updateNavs() {
+  var navH = parseInt(getComputedStyle(document.documentElement)
+              .getPropertyValue('--nav-h')) || 36;
+  var threshold = navH + 8;
 
-function initNavObservers() {
-  var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 36;
-  var opts = {
-    rootMargin: '-' + navH + 'px 0px -60% 0px',
-    threshold: 0
-  };
-
-  /* AM nav */
-  var amObs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) setNavActive('#am-nav', e.target.id);
+  function activate(navSel, anchorSel) {
+    var nav = document.querySelector(navSel);
+    if (!nav) return;
+    var current = '';
+    document.querySelectorAll(anchorSel).forEach(function(el) {
+      if (el.getBoundingClientRect().top <= threshold) current = el.id;
     });
-  }, opts);
-  document.querySelectorAll('[id^="s"]').forEach(function(el) { amObs.observe(el); });
-
-  /* Fiches nav */
-  var fObs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) setNavActive('#fiches-nav', e.target.id);
+    if (!current) return;
+    nav.querySelectorAll('a').forEach(function(a) {
+      var active = a.getAttribute('href') === '#' + current;
+      a.classList.toggle('active', active);
+      if (active) {
+        var aRect = a.getBoundingClientRect();
+        var nRect = nav.getBoundingClientRect();
+        var target = nav.scrollLeft + (aRect.left - nRect.left)
+                     - nav.offsetWidth / 2 + aRect.width / 2;
+        nav.scrollLeft = Math.max(0, Math.round(target));
+      }
     });
-  }, opts);
-  document.querySelectorAll('[id$="-a"]').forEach(function(el) { fObs.observe(el); });
-}
-
-
-
-let _rafPending = false;
-function _onScroll() {
-  if (!_rafPending) {
-    _rafPending = true;
-    requestAnimationFrame(function() { updateAll(); _rafPending = false; });
   }
+
+  activate('#am-nav',     '[id^="s"]');
+  activate('#fiches-nav', '[id$="-a"]');
 }
-window.addEventListener('scroll', _onScroll, {passive: true});
-window.addEventListener('resize', _onScroll, {passive: true});
+
+function initNavObservers() { /* remplacé par scroll direct */ }
+
+
+
+window.addEventListener('scroll', function() {
+  updateAll();
+  updateNavs();
+}, {passive: true});
+window.addEventListener('resize', function() {
+  updateAll();
+  updateNavs();
+}, {passive: true});
 
 /* Construire les .am-header (numéro + titre + fond) */
 document.querySelectorAll('#book-am .am-sn').forEach(function(sn) {
