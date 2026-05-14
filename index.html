@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1a4a2e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Verbos PT">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+<link rel="apple-touch-icon" sizes="120x120" href="icon-120.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<title>Conjugação — Português do Brasil</title>
+<meta name="description" content="Entraîne-toi à conjuguer les verbes portugais (Brésil) — présent, passé, imparfait. Application progressive pour apprenants francophones.">
+<link rel="stylesheet" href="style.css?v=iota18">
+<link rel="stylesheet" href="stats.css?v=iota18">
+<link rel="stylesheet" href="nav.css?v=iota18">
+</head>
+<body lang="fr">
+
+<!-- ═══════════════════════════════════════════════
+     SPLASH SCREEN
+     ═══════════════════════════════════════════════ -->
+<div id="splash">
+  <div class="splash-inner">
+
+    <img src="icon-192.png" class="splash-icon" alt="Conjugação PT">
+
+    <h1 class="splash-title">
+      <em class="splash-conjugacao">Conjugação</em>
+      <small class="splash-pt">Português do Brasil</small>
+    </h1>
+
+    <!-- Indicateurs de chargement -->
+    <div class="splash-checks" id="splashChecks">
+      <div class="splash-check-item" id="spi-data">
+        <span class="spi-dot"></span>
+        <span class="spi-text" data-i18n="splash_data">Verbes &amp; données…</span>
+      </div>
+      <div class="splash-check-item" id="spi-i18n">
+        <span class="spi-dot"></span>
+        <span class="spi-text" data-i18n="splash_lang">Langue de l'interface…</span>
+      </div>
+      <div class="splash-check-item" id="spi-voice">
+        <span class="spi-dot"></span>
+        <span class="spi-text" data-i18n="splash_voice">Voix brésilienne…</span>
+      </div>
+    </div>
+
+    <!-- Greeting Rio + bouton entrer -->
+    <div class="splash-greeting" id="splashGreeting"></div>
+
+    <button class="splash-enter-btn" id="splashEnterBtn" onclick="Splash.enter()">
+      Entrar →
+    </button>
+
+    <div class="splash-version" data-app-version></div>
+
+  </div>
+</div>
+
+<!-- Compatibilité data.js (cherche #dataLoader pour le masquer) -->
+<div id="dataLoader" style="display:none"></div>
+
+<!-- ═══════════════════════════════════════════════
+     APP SHELL
+     ═══════════════════════════════════════════════ -->
+<div id="appShell" class="app-shell-hidden">
+
+  <!-- Barre d'installation PWA -->
+  <div class="install-bar" id="installBar">
+    <div class="install-bar-inner">
+      <span class="install-bar-icon">&#127463;&#127479;</span>
+      <div class="install-bar-text">
+        <div class="install-bar-title" id="installTitle" data-i18n="install_title">Installer l'app</div>
+        <div class="install-bar-desc"  id="installDesc"></div>
+      </div>
+      <button class="install-bar-btn"   id="installBtn"   style="display:none" data-i18n="install_btn">Installer</button>
+      <button class="install-bar-close" id="installClose">&#10005;</button>
+    </div>
+    <div class="install-arrow"></div>
+  </div>
+
+  <!-- ─────────────────────────────
+       HEADER GLOBAL (compact)
+       ───────────────────────────── -->
+  <header id="appHeader">
+    <div class="flag-stripe"><span></span><span></span><span></span></div>
+    <div id="pageTitle" class="page-title-bar" style="display:none">
+      <span id="pageTitleText"></span>
+    </div>
+  </header>
+
+  <!-- ─────────────────────────────
+       PAGES
+       ───────────────────────────── -->
+  <main id="pagesContainer">
+
+    <!-- ── PAGE : EXERCER ── -->
+    <div id="page-exercer" class="page active">
+
+      <!-- Sélecteur de temps compact + cycle 1/3/6 -->
+      <div class="tense-chip-bar" style="position:relative">
+        <div class="tense-chip" id="tenseChip" onclick="openTensePicker()">
+          <div class="tense-chip-group">
+            <div class="tense-chip-content">
+              <span class="tense-chip-pt" id="tenseChipPt">Presente do Indicativo</span>
+              <span class="tense-chip-fr" id="tenseChipFr" data-i18n="tense_btn_present">Présent de l'indicatif</span>
+            </div>
+            <span class="tense-chip-dots">···</span>
+          </div>
+        </div>
+        <!-- Overlay verrou chip -->
+        <div class="me-lock-overlay" id="meChipLock" style="display:none" title=""></div>
+      </div>
+
+      <!-- Zone de sélection des verbes -->
+      <div class="sel-group-wrap" style="background:#fff;position:relative">
+        <!-- Overlay verrou panneau sélection -->
+        <div class="me-lock-overlay me-lock-panel" id="mePanelLock" style="display:none">
+          <div class="me-lock-badge">
+            <span class="me-lock-icon">🎯</span>
+            <span class="me-lock-text" data-i18n="mode_erreurs_panel_locked">Mode erreurs actif</span>
+            <span class="me-lock-hint" data-i18n="mode_erreurs_panel_unlock" data-i18n="selection_hint">Décoche pour modifier la sélection</span>
+          </div>
+        </div>
+      <div class="sel-group">
+        <div class="selection-container">
+          <div class="selection-header">
+            <p class="selection-title-pt" data-i18n="sel_title_pt">Escolha seus verbos por nível ou por tema</p>
+            <p class="selection-title-fr" data-i18n="sel_title_fr" data-i18n="selection_subtitle">Choisis tes verbes par niveau ou par thème</p>
+          </div>
+          <div class="sel-tabs" id="selTabs">
+            <button class="sel-tab active" onclick="switchSelTab('nivel',this)"  data-i18n="sel_tab_nivel">Nível</button>
+            <button class="sel-tab"        onclick="switchSelTab('grupo',this)"  data-i18n="sel_tab_grupo">Grupo</button>
+            <button class="sel-tab"        onclick="switchSelTab('tema',this)"   data-i18n="sel_tab_tema">Tema</button>
+            <button class="sel-tab"        onclick="switchSelTab('verbos',this)" data-i18n="sel_tab_verbos">Verbos</button>
+          </div>
+          <!-- Panel Nível -->
+          <div class="sel-panel active" id="panel-nivel">
+            <div class="levels-bar" id="levelsBar">
+              <button class="level-btn" data-level="1">1</button>
+              <button class="level-btn" data-level="2">2</button>
+              <button class="level-btn" data-level="3">3</button>
+              <button class="level-btn" data-level="4">4</button>
+              <button class="level-btn" data-level="5">5</button>
+              <button class="level-btn" data-level="6">6</button>
+              <button class="level-info-toggle" id="levelInfoToggle">?</button>
+            </div>
+            <div class="level-info-panel" id="levelInfoPanel" style="margin-top:10px"></div>
+          </div>
+          <!-- Panel Grupo -->
+          <div class="sel-panel" id="panel-grupo">
+            <div class="grupo-grid" id="grupoGrid">
+              <div class="grupo-btn" onclick="applyGrupo('irreg')"><span class="grupo-btn-label"><span class="gbtn-text" data-i18n="cat_irreg">Irréguliers &amp; Importants</span> <span class="grupo-btn-count"></span></span><button class="grupo-info-btn" onclick="toggleGrupoInfo(event,'irreg')">?</button><div class="grupo-tooltip" id="gtip-irreg"></div></div>
+              <div class="grupo-btn" onclick="applyGrupo('ar')"><span class="grupo-btn-label"><span class="gbtn-text" data-i18n="cat_ar">Verbes en -AR</span> <span class="grupo-btn-count"></span></span><button class="grupo-info-btn" onclick="toggleGrupoInfo(event,'ar')">?</button><div class="grupo-tooltip" id="gtip-ar"></div></div>
+              <div class="grupo-btn" onclick="applyGrupo('er_reg')"><span class="grupo-btn-label"><span class="gbtn-text" data-i18n="cat_er_reg">-ER réguliers</span> <span class="grupo-btn-count"></span></span><button class="grupo-info-btn" onclick="toggleGrupoInfo(event,'er_reg')">?</button><div class="grupo-tooltip" id="gtip-er_reg"></div></div>
+              <div class="grupo-btn" onclick="applyGrupo('er_irr')"><span class="grupo-btn-label"><span class="gbtn-text" data-i18n="cat_er_irr">-ER irréguliers</span> <span class="grupo-btn-count"></span></span><button class="grupo-info-btn" onclick="toggleGrupoInfo(event,'er_irr')">?</button><div class="grupo-tooltip" id="gtip-er_irr"></div></div>
+              <div class="grupo-btn" onclick="applyGrupo('ir_reg')"><span class="grupo-btn-label"><span class="gbtn-text" data-i18n="cat_ir_reg">-IR réguliers</span> <span class="grupo-btn-count"></span></span><button class="grupo-info-btn" onclick="toggleGrupoInfo(event,'ir_reg')">?</button><div class="grupo-tooltip" id="gtip-ir_reg"></div></div>
+              <div class="grupo-btn" onclick="applyGrupo('ir_irr')"><span class="grupo-btn-label"><span class="gbtn-text" data-i18n="cat_ir_irr">-IR irréguliers</span> <span class="grupo-btn-count"></span></span><button class="grupo-info-btn" onclick="toggleGrupoInfo(event,'ir_irr')">?</button><div class="grupo-tooltip" id="gtip-ir_irr"></div></div>
+              <div class="grupo-btn" onclick="applyGrupo('all_irr')" style="border-color:var(--gold-dark);background:rgba(232,200,74,.08)"><span class="grupo-btn-label" style="color:var(--gold-dark)"><span class="gbtn-text" data-i18n="cat_all_irr">Tous les irréguliers</span></span><span class="grupo-btn-count"></span><button class="grupo-info-btn" onclick="toggleGrupoInfo(event,'all_irr')">?</button><div class="grupo-tooltip" id="gtip-all_irr"></div></div>
+            </div>
+          </div>
+          <!-- Panel Tema -->
+          <div class="sel-panel" id="panel-tema">
+            <div class="theme-sem-grid" id="temaSemGrid">
+              <div class="theme-sem-btn" onclick="applyThemeSemantic('etre')"><button class="tema-info-btn" onclick="toggleTemaInfo(event,'etre')">?</button><div class="tema-tooltip" id="tip-etre"></div><span class="theme-sem-label">Ser &amp; estar <span class="grupo-btn-count"></span></span><span class="theme-sem-fr" data-i18n="theme_etre_desc">Être &amp; état</span></div>
+              <div class="theme-sem-btn" onclick="applyThemeSemantic('mouvement')"><button class="tema-info-btn" onclick="toggleTemaInfo(event,'mouvement')">?</button><div class="tema-tooltip" id="tip-mouvement"></div><span class="theme-sem-label">Mover-se <span class="grupo-btn-count"></span></span><span class="theme-sem-fr" data-i18n="theme_mouvement_desc">Se déplacer</span></div>
+              <div class="theme-sem-btn" onclick="applyThemeSemantic('comm')"><button class="tema-info-btn" onclick="toggleTemaInfo(event,'comm')">?</button><div class="tema-tooltip" id="tip-comm"></div><span class="theme-sem-label">Comunicar <span class="grupo-btn-count"></span></span><span class="theme-sem-fr" data-i18n="theme_comm_desc">Communiquer</span></div>
+              <div class="theme-sem-btn" onclick="applyThemeSemantic('penser')"><button class="tema-info-btn" onclick="toggleTemaInfo(event,'penser')">?</button><div class="tema-tooltip" id="tip-penser"></div><span class="theme-sem-label">Pensar &amp; sentir <span class="grupo-btn-count"></span></span><span class="theme-sem-fr" data-i18n="theme_penser_desc">Penser &amp; ressentir</span></div>
+              <div class="theme-sem-btn" onclick="applyThemeSemantic('corps')"><button class="tema-info-btn" onclick="toggleTemaInfo(event,'corps')">?</button><div class="tema-tooltip" id="tip-corps"></div><span class="theme-sem-label">Corpo &amp; casa <span class="grupo-btn-count"></span></span><span class="theme-sem-fr" data-i18n="theme_corps_desc">Corps &amp; maison</span></div>
+              <div class="theme-sem-btn" onclick="applyThemeSemantic('loisirs')"><button class="tema-info-btn" onclick="toggleTemaInfo(event,'loisirs')">?</button><div class="tema-tooltip" id="tip-loisirs"></div><span class="theme-sem-label">Lazer &amp; arte <span class="grupo-btn-count"></span></span><span class="theme-sem-fr" data-i18n="theme_loisirs_desc">Loisirs &amp; art</span></div>
+              <div class="theme-sem-btn" onclick="applyThemeSemantic('agir')"><button class="tema-info-btn" onclick="toggleTemaInfo(event,'agir')">?</button><div class="tema-tooltip" id="tip-agir"></div><span class="theme-sem-label">Agir &amp; mudar <span class="grupo-btn-count"></span></span><span class="theme-sem-fr" data-i18n="theme_agir_desc">Agir &amp; changer</span></div>
+              <div class="theme-sem-btn" onclick="applyThemeSemantic('travail')"><button class="tema-info-btn" onclick="toggleTemaInfo(event,'travail')">?</button><div class="tema-tooltip" id="tip-travail"></div><span class="theme-sem-label">Trocas &amp; trabalho <span class="grupo-btn-count"></span></span><span class="theme-sem-fr" data-i18n="theme_travail_desc">Échanges &amp; travail</span></div>
+            </div>
+          </div>
+          <!-- Panel Verbos -->
+          <div class="sel-panel" id="panel-verbos">
+            <div class="verbos-panel-header" data-i18n="config_summary_fr">Verbes à travailler</div>
+            <div class="config-body"  id="configBody"></div>
+            <div class="config-count" id="configCount"></div>
+          </div>
+        </div>
+      </div></div>
+
+      <!-- Bouton démarrer + aide + mode erreurs -->
+      <div style="text-align:center;margin:18px 0 4px;display:flex;align-items:center;justify-content:center;gap:10px">
+        <button class="btn btn-start comecar-btn" id="btnStart2">🎲 Começar<span class="btn-sub" data-i18n="btn_start_sub">Commencer</span></button>
+        <button class="level-info-toggle" id="helpBtn" title="Aide">?</button>
+      </div>
+
+      <!-- Mode erreurs : checkbox sous Começar -->
+      <div class="mode-erreurs-row">
+        <label class="mode-erreurs-label me-disabled" id="modeErreursLabel" title="Lance d'abord quelques exercices">
+          <input type="checkbox" id="modeErreursCheck" disabled>
+          <span data-i18n="mode_erreurs_label">Travailler mes erreurs</span>
+        </label>
+      </div>
+
+      <div id="helpPanel" style="display:none;max-width:520px;margin:10px auto 0;background:rgba(240,230,200,.35);border:1px solid rgba(201,168,46,.15);border-radius:14px;padding:12px 16px;font-size:.78rem;color:var(--text-mid);line-height:1.6">
+        <p data-i18n="hint_eye_card" data-i18n="hint_fullconj">👁️ Clique sur l'œil d'une carte → conjugaison complète du verbe aux 3 temps</p>
+        <p style="margin-top:6px">🎯 <em><strong>Travailler mes erreurs</strong> : après quelques exercices, coche cette case pour cibler automatiquement les verbes ou les temps où tu fais le plus d'erreurs</em></p>
+        <p style="margin-top:6px">📋 <em>Le tableau complet des verbes de l'exercice est dans l'onglet <strong>Tableau</strong> en bas</em></p>
+        <p style="margin-top:6px">🔊 <em>Active la voix dans ⚙️ → les formes correctes sont énoncées en pt-BR</em></p>
+      </div>
+
+      <div id="cardsArea"></div>
+
+      <div class="controls controls-bottom" id="controlsBottom" style="display:none">
+        <button class="btn btn-start comecar-btn" id="btnRestart">🔄 Recomeçar<span class="btn-sub" data-i18n="btn_restart_sub">Recommencer</span></button>
+        <button class="btn btn-check"  id="btnCheck">Verificar <span class="btn-sub"  data-i18n="btn_check_bilingual">Vérifier</span></button>
+        <button class="btn btn-reveal" id="btnReveal">Corrigir <span class="btn-sub" data-i18n="btn_reveal_bilingual">Corriger</span></button>
+      </div>
+
+      <div class="hints-option" id="hintsOptionRow" style="display:none;margin:10px 0 0">
+        <label class="hints-label">
+          <input type="checkbox" id="hintsToggle" checked>
+          <span data-i18n="hints_toggle_label" data-i18n="hints_label">Donner des indices à la vérification</span>
+        </label>
+      </div>
+
+<!-- refDetails déplacé dans page-tabela -->
+
+    </div><!-- /page-exercer -->
+
+    <!-- ── PAGE : PROGRÈS ── -->
+    <div id="page-progres" class="page">
+      <!-- buildStatsPanel() rend ici -->
+      <div id="statsPanel"></div>
+    </div>
+
+    <!-- ── PAGE : RÉFÉRENCE ── -->
+    <!-- ══ PAGE ÉCOUTE ══ -->
+    <div id="page-ecoute" class="page">
+
+      <!-- Setup -->
+      <div class="ec-setup" id="ecSetup">
+        <div class="ec-setup-inner">
+
+          <!-- Pronom -->
+          <div class="ec-section">
+            <span class="ec-section-label" data-i18n="ecoute_pronoun_mode">Pronom</span>
+            <div class="ec-mode-toggle">
+              <button class="ec-mode-btn" data-mode="elide"
+                      onclick="Ecoute.setPronounMode('elide')"
+                      data-i18n="ecoute_elide">Éludé 🎭</button>
+              <button class="ec-mode-btn active" data-mode="enonce"
+                      onclick="Ecoute.setPronounMode('enonce')"
+                      data-i18n="ecoute_enonce">Énoncé 🔊</button>
+            </div>
+          </div>
+
+          <!-- Verbes par niveau -->
+          <div class="ec-section">
+            <span class="ec-section-label" data-i18n="sel_tab_nivel">Niveau</span>
+            <div class="ec-level-btns">
+              <button class="ec-level-btn" data-level="0"
+                      onclick="Ecoute.setLevel(0,this)"
+                      data-i18n="ec_level_all">Tous</button>
+              <button class="ec-level-btn active" data-level="1"
+                      onclick="Ecoute.setLevel(1,this)">Nív 1</button>
+              <button class="ec-level-btn" data-level="2"
+                      onclick="Ecoute.setLevel(2,this)"
+                      data-i18n="ec_nivel_2">Nív 2</button>
+              <button class="ec-level-btn" data-level="3"
+                      onclick="Ecoute.setLevel(3,this)"
+                      data-i18n="ec_nivel_3">Nív 3</button>
+              <button class="ec-level-btn" data-level="4"
+                      onclick="Ecoute.setLevel(4,this)"
+                      data-i18n="ec_nivel_4">Nív 4</button>
+              <button class="ec-level-btn" data-level="5"
+                      onclick="Ecoute.setLevel(5,this)"
+                      data-i18n="ec_nivel_5">Nív 5</button>
+              <button class="ec-level-btn" data-level="6"
+                      onclick="Ecoute.setLevel(6,this)"
+                      data-i18n="ec_nivel_6">Nív 6</button>
+            </div>
+          </div>
+
+          <!-- Verbes par thème -->
+          <div class="ec-section">
+            <span class="ec-section-label" data-i18n="sel_tab_tema">Thème</span>
+            <div class="ec-theme-btns" id="ecThemeBtns">
+              <!-- Construit dynamiquement via JS -->
+            </div>
+          </div>
+
+          <!-- Temps (multi-sélection) -->
+          <div class="ec-section">
+            <span class="ec-section-label" data-i18n="ecoute_which_tense">Temps</span>
+            <div class="ec-tense-setup-btns">
+              <button class="ec-tense-setup-btn active" data-tense="present"
+                      onclick="Ecoute.toggleTense('present',this)"
+                      data-i18n="tense_btn_present">Présent</button>
+              <button class="ec-tense-setup-btn" data-tense="pret"
+                      onclick="Ecoute.toggleTense('pret',this)"
+                      data-i18n="tense_btn_pret">Passé</button>
+              <button class="ec-tense-setup-btn" data-tense="imperf"
+                      onclick="Ecoute.toggleTense('imperf',this)"
+                      data-i18n="tense_btn_imperf">Imparfait</button>
+              <button class="ec-tense-setup-btn" data-tense="fut"
+                      onclick="Ecoute.toggleTense('fut',this)"
+                      data-i18n="tense_btn_fut">Futur</button>
+              <button class="ec-tense-setup-btn" data-tense="cond"
+                      onclick="Ecoute.toggleTense('cond',this)"
+                      data-i18n="tense_btn_cond">Conditionnel</button>
+              <button class="ec-tense-setup-btn" data-tense="subj"
+                      onclick="Ecoute.toggleTense('subj',this)"
+                      data-i18n="tense_btn_subj">Subjonctif</button>
+            </div>
+          </div>
+
+          <button class="btn btn-start ec-start-btn" id="ecStartBtn"
+                  onclick="Ecoute.start()">
+            🎧 <span data-i18n="ecoute_start">Commencer</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Exercice -->
+      <div class="ec-exercise" id="ecExercise" style="display:none">
+
+        <!-- Zone audio -->
+        <div class="ec-audio-zone">
+          <button class="ec-play-btn" onclick="Ecoute.play()">🔊</button>
+          <button class="ec-replay-btn" onclick="Ecoute.play()"
+                  data-i18n="ecoute_relisten">▶ Réécouter</button>
+          <button class="ec-back-setup-btn" onclick="Ecoute.backToSetup()"
+                  title="Changer la sélection">⚙️</button>
+        </div>
+
+        <!-- Questions -->
+        <div class="ec-questions" id="ecQuestions">
+
+          <!-- Qui parle ? (éludé seulement) -->
+          <div class="ec-q-block" id="ecQPronoun">
+            <p class="ec-q-label" data-i18n="ecoute_who">Qui parle ?</p>
+            <div class="ec-choice-grid ec-pron-grid" id="ecPronounBtns"></div>
+          </div>
+
+          <!-- Quel verbe ? -->
+          <div class="ec-q-block">
+            <p class="ec-q-label" data-i18n="ecoute_which_verb">Quel verbe ?</p>
+            <div class="ec-choice-grid ec-verb-grid" id="ecVerbBtns"></div>
+          </div>
+
+          <!-- Quel temps ? -->
+          <div class="ec-q-block">
+            <p class="ec-q-label" data-i18n="ecoute_which_tense">Quel temps ?</p>
+            <div class="ec-choice-grid ec-tense-grid" id="ecTenseBtns"></div>
+          </div>
+
+          <p class="ec-validate-hint" id="ecValidateHint" style="display:none"></p>
+          <button class="btn ec-validate-btn" id="ecValidateBtn"
+                  onclick="Ecoute.validate()" disabled>
+            <span data-i18n="ecoute_validate">✓ Valider</span>
+          </button>
+        </div>
+
+        <!-- Résultat -->
+        <div class="ec-result" id="ecResult" style="display:none">
+          <div class="ec-result-content" id="ecResultContent"></div>
+
+          <!-- Zone écriture optionnelle (seulement si correct) -->
+          <div class="ec-write-zone" id="ecWriteZone" style="display:none">
+            <p class="ec-write-q" data-i18n="ecoute_write_q">✍️ Saurais-tu l'écrire ?</p>
+            <div class="ec-write-form">
+              <span class="ec-write-pron" id="ecWritePronoun">você</span>
+              <input class="ec-write-input" id="ecWriteInput"
+                     type="text"
+                     autocomplete="off"
+                     data-form-type="other"
+                     autocorrect="off"
+                     autocapitalize="off"
+                     spellcheck="false"
+                     inputmode="latin"
+                     placeholder="…">
+            </div>
+            <p class="ec-write-hint" id="ecWriteHint" style="display:none"></p>
+            <div class="ec-write-actions">
+              <button class="ec-btn-skip" onclick="Ecoute.nextQuestion()"
+                      data-i18n="ecoute_skip">Passer</button>
+              <button class="ec-btn-verify" id="ecWriteVerifyBtn"
+                      onclick="Ecoute.verifyWriting()" disabled
+                      data-i18n="ecoute_verify">✓ Vérifier</button>
+            </div>
+          </div>
+
+          <!-- Actions dynamiques : retry/answer/next -->
+          <div id="ecResultActions" style="margin-top:12px"></div>
+  
+      </div>
+    </div><!-- /ecExercise -->
+  </div><!-- /page-ecoute -->
+
+    <div id="page-reference" class="page">
+      <div id="refPage" class="ref-page-wrap">
+
+        <!-- ── FRANÇAIS : carte d'entrée anti-manuel ── -->
+        <div class="ref-lang-card" data-lang-show="fr">
+          <div class="ref-am-hero">
+            <div class="ref-am-badge">Anti-Manuel</div>
+            <h2 class="ref-am-title">Portugais Brésilien<br><em>depuis le français</em></h2>
+            <p class="ref-am-desc">La plupart des manuels te demandent de désapprendre ta langue pour apprendre l'autre. Cet anti-manuel fait l'inverse — il part de ce que tu fais déjà sans le nommer. Vingt siècles de latin commun entre le français et le portugais brésilien.</p>
+            <a href="ref-fr.html" target="_blank" class="ref-am-btn">📖 Ouvrir l'Anti-Manuel</a>
+          </div>
+          <div class="ref-am-features">
+            <div class="ref-am-feat">🔊 <strong>Phonologie</strong> — Tes nasales françaises préparent directement <em>ã, em, om</em></div>
+            <div class="ref-am-feat">⏱ <strong>Aspect verbal</strong> — Passé composé / imparfait : la logique centrale du portugais</div>
+            <div class="ref-am-feat">✨ <strong>Subjonctif</strong> — Tu l'utilises à l'oral. Le brésilien aussi. Transfert quasi-direct</div>
+            <div class="ref-am-feat">📐 <strong>Distance optimale</strong> — Ni trop proche comme l'espagnol, ni trop loin comme l'allemand</div>
+          </div>
+        </div>
+
+        <!-- ── AUTRES LANGUES ── -->
+        <div class="ref-lang-card ref-other" data-lang-hide="fr">
+          <div class="ref-other-icon">📖</div>
+          <div id="refOtherTitle" class="ref-other-title"></div>
+          <div id="refOtherSub" class="ref-other-sub"></div>
+          <div id="refOtherDesc" class="ref-other-desc"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ PAGE CONFIG ══ -->
+    <div id="page-config" class="page">
+      <div class="config-page-inner">
+<!-- Langue -->
+      <div class="config-section">
+        <div class="config-section-title" data-i18n="config_label_lang">🌐 Langue de l'interface</div>
+        <div class="lang-grid" id="langSelector">
+          <button class="lang-card" data-lang="fr"    onclick="I18n.switchLang('fr').then(updateLangBtns)"><span class="lang-flag">🇫🇷</span><span class="lang-name">Français</span></button>
+          <button class="lang-card" data-lang="en"    onclick="I18n.switchLang('en').then(updateLangBtns)"><span class="lang-flag">🇬🇧</span><span class="lang-name">English</span></button>
+          <button class="lang-card" data-lang="de"    onclick="I18n.switchLang('de').then(updateLangBtns)"><span class="lang-flag">🇩🇪</span><span class="lang-name">Deutsch</span></button>
+          <button class="lang-card" data-lang="es"    onclick="I18n.switchLang('es').then(updateLangBtns)"><span class="lang-flag">🇪🇸</span><span class="lang-name">Español</span></button>
+          <button class="lang-card" data-lang="it"    onclick="I18n.switchLang('it').then(updateLangBtns)"><span class="lang-flag">🇮🇹</span><span class="lang-name">Italiano</span></button>
+          <button class="lang-card" data-lang="pt-BR" onclick="I18n.switchLang('pt-BR').then(updateLangBtns)"><span class="lang-flag">🇧🇷</span><span class="lang-name">Português</span></button>
+          <button class="lang-card" data-lang="nl"    onclick="I18n.switchLang('nl').then(updateLangBtns)"><span class="lang-flag">🇳🇱</span><span class="lang-name">Nederlands</span></button>
+          <button class="lang-card" data-lang="da"    onclick="I18n.switchLang('da').then(updateLangBtns)"><span class="lang-flag">🇩🇰</span><span class="lang-name">Dansk</span></button>
+          <button class="lang-card" data-lang="no"    onclick="I18n.switchLang('no').then(updateLangBtns)"><span class="lang-flag">🇳🇴</span><span class="lang-name">Norsk</span></button>
+        </div>
+        <div class="voice-debug-block" id="voiceDebugBlock" style="display:none"></div>
+      </div>
+      <!-- Voix -->
+      <div class="config-section">
+        <div class="voice-actions-row">
+          <button class="voice-install-btn" id="voiceInstallBtn" onclick="toggleVoiceHelp()">
+            <span id="voiceInstallBtnLabel" data-i18n="voice_install_btn">Installer la voix brésilienne</span>
+          </button>
+          <button class="voice-test-btn" id="voiceTestBtn" onclick="testVoice()" style="display:none">
+            <span data-i18n="voice_test_btn">🔊 Tester</span>
+          </button>
+        </div>
+        <!-- Sélecteur de voix -->
+        <div class="voice-picker-row" id="voicePickerRow" style="display:none">
+          <label class="voice-picker-label">🎙 Voix :</label>
+          <select class="voice-picker-select" id="voicePickerSelect" onchange="selectVoice(this.value)"></select>
+        </div>
+        <p class="voice-picker-warning" id="voicePickerWarning" style="display:none"
+           data-i18n="voice_picker_warning_safari">
+          ⚠️ Bug connu Safari / Apple — le changement de voix peut ne pas être pris en compte.
+        </p>
+        <p class="voice-picker-legend" data-i18n="voice_picker_legend">✓ installée &nbsp;·&nbsp; ⬇ à télécharger &nbsp;·&nbsp; ★ voix système</p>
+        <div class="voice-help-panel" id="voiceHelpPanel"></div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <p class="modal-copyright">© Franck Mignot 2026 &nbsp;·&nbsp; <span style="font-size:.75rem;color:#aaa" data-app-version></span></p>
+      <p class="modal-privacy">
+        🔒 <strong data-i18n="privacy_title">Confidentialité</strong> —
+        <span data-i18n="privacy_text">Cette application ne collecte, ne transmet et ne partage aucune donnée personnelle. Les statistiques d'exercice sont conservées uniquement sur votre appareil (stockage local). Aucun compte, aucun serveur, aucun suivi.</span>
+      </p>
+    </div>
+
+  </div>
+
+
+    <!-- ── PAGE : TABELA (Conjugaisons) ── -->
+    <div id="page-tabela" class="page">
+      <div class="tabela-intro">
+        <p class="tabela-intro-text" data-i18n="tabela_intro">Conjugaisons des verbes sélectionnés dans l'onglet Exercer, pour le temps en cours.</p>
+        <p class="tabela-intro-hint" data-i18n="tabela_hint">👆 Pour changer les verbes affichés, utilise le sélecteur de l'onglet Exercer — niveaux, groupes ou thèmes.</p>
+      </div>
+      <div id="tabelaContent">
+        <!-- details conservé pour compatibilité avec DOM.refDetails dans ui-selection.js -->
+        <details id="refDetails" open style="display:block">
+          <summary style="display:none"></summary>
+          <div id="refGrid"></div>
+        </details>
+      </div>
+    </div>
+
+  </main><!-- /pagesContainer -->
+
+  <!-- ─────────────────────────────
+       BOTTOM NAV
+       ───────────────────────────── -->
+  <nav id="bottomNav">
+    <button class="nav-btn active" data-page="exercer"   onclick="Router.go('exercer')">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label" data-i18n="nav_exercer">Exercer</span>
+    </button>
+    <button class="nav-btn"        data-page="ecoute"    onclick="Router.go('ecoute')">
+      <span class="nav-icon">🎧</span>
+      <span class="nav-label" data-i18n="nav_ecoute">Écoute</span>
+    </button>
+    <button class="nav-btn"        data-page="progres"   onclick="Router.go('progres')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label" data-i18n="nav_progres">Progrès</span>
+    </button>
+    <button class="nav-btn"        data-page="tabela"    onclick="Router.go('tabela')">      <span class="nav-icon">📋</span>      <span class="nav-label" data-i18n="nav_tabela">Tableau</span>    </button>    <button class="nav-btn"        data-page="reference" onclick="Router.go('reference')">
+      <span class="nav-icon">📖</span>
+      <span class="nav-label" data-i18n="nav_reference">Référence</span>
+    </button>
+    <button class="nav-btn nav-btn-config" data-page="config" onclick="Router.go('config')">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label" data-i18n="nav_config">Config</span>
+    </button>
+  </nav>
+
+
+<!-- ═══════════════════════════════════════════════
+     MODAL : CONFIGURATION
+     ═══════════════════════════════════════════════ -->
+
+
+<!-- ═══════════════════════════════════════════════
+     MODAL : MODE ERREURS
+     ═══════════════════════════════════════════════ -->
+<div id="modeErreursModal" class="modal-overlay mode-err-overlay" style="display:none" onclick="ModeErreurs.close()">
+  <div class="modal-box mode-err-box mode-err-box-2step" onclick="event.stopPropagation()">
+
+    <div class="modal-header">
+      <span class="modal-title">🎯 <span data-i18n="mode_erreurs_title">Apprendre de ses erreurs</span></span>
+      <button class="modal-close-btn" onclick="ModeErreurs.close()">✕</button>
+    </div>
+
+    <!-- ── ÉTAPE 1 : verbes ── -->
+    <div class="me-step" id="meStep1">
+      <p class="me-step-title" data-i18n="me_step1_title">Étape 1 — Quels verbes ?</p>
+
+      <div class="me-scope-cards">
+
+        <div class="me-scope-card" id="meScopeCurrentCard"
+             onclick="ModeErreurs.selectScope('current',this)">
+          <span class="me-scope-icon">📋</span>
+          <div class="me-scope-text">
+            <span class="me-scope-label" data-i18n="me_scope_current">Ma sélection actuelle</span>
+            <span class="me-scope-sub"   data-i18n="me_scope_current_sub">Les verbes déjà cochés</span>
+          </div>
+        </div>
+
+        <div class="me-scope-card" id="meScopeGroupCard"
+             onclick="ModeErreurs.selectScope('group',this)">
+          <span class="me-scope-icon">📂</span>
+          <div class="me-scope-text">
+            <span class="me-scope-label" data-i18n="me_scope_group">Choisir un groupe…</span>
+            <span class="me-scope-sub"></span>
+          </div>
+          <!-- picker construit dynamiquement -->
+          <div class="me-group-picker" id="meGroupPicker" style="display:none"></div>
+        </div>
+
+        <div class="me-scope-card" id="meScopeAllCard"
+             onclick="ModeErreurs.selectScope('all',this)">
+          <span class="me-scope-icon">🌐</span>
+          <div class="me-scope-text">
+            <span class="me-scope-label" data-i18n="me_scope_all">Tous les verbes</span>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="me-btn-primary" id="meBtnNext"
+              onclick="ModeErreurs.nextStep()" disabled>
+        <span data-i18n="me_btn_next">Suivant →</span>
+      </button>
+    </div>
+
+    <!-- ── ÉTAPE 2 : temps ── -->
+    <div class="me-step" id="meStep2" style="display:none">
+
+      <div class="me-breadcrumb" id="meBreadcrumb"></div>
+      <p class="me-step-title" data-i18n="me_step2_title">Étape 2 — Quel(s) temps ?</p>
+
+      <div class="me-tense-sections">
+
+        <div class="me-tense-section" id="meTensePickSection"
+             onclick="ModeErreurs.selectTenseMode('pick',this)">
+          <span class="me-scope-icon">⏱️</span>
+          <div class="me-scope-text">
+            <span class="me-scope-label" data-i18n="me_tense_pick">Choisir un temps</span>
+          </div>
+          <div class="me-tense-buttons" id="meTenseButtons" style="display:none"></div>
+        </div>
+
+        <div class="me-tense-section" id="meTenseAllSection"
+             onclick="ModeErreurs.selectTenseMode('all',this)">
+          <span class="me-scope-icon">🗓️</span>
+          <div class="me-scope-text">
+            <span class="me-scope-label" data-i18n="me_tense_all">Tous les temps</span>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="me-filter-hint" data-i18n="me_filter_hint">⚠ Seules les formes avec un mauvais score seront proposées</p>
+
+      <div class="me-step2-actions">
+        <button class="me-btn-back" onclick="ModeErreurs.prevStep()">
+          <span data-i18n="me_btn_back">← Retour</span>
+        </button>
+        <button class="me-btn-primary" id="meBtnStart"
+                onclick="ModeErreurs.startFiltered()" disabled>
+          <span data-i18n="me_btn_start">🎯 Commencer</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ── BRAVO ── -->
+    <div class="me-step me-bravo-step" id="meStepBravo" style="display:none">
+      <div class="me-bravo-icon">🎉</div>
+      <p class="me-bravo-title" data-i18n="me_nothing_bad">Bravo, tout est bon ici !</p>
+      <p class="me-bravo-sub"   data-i18n="me_nothing_bad_sub">Aucune erreur dans cette combinaison</p>
+      <button class="me-btn-back" onclick="ModeErreurs.prevStep()">
+        <span data-i18n="me_btn_back">← Retour</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     APP BOOT — Module de démarrage robuste.
+     Script INLINE chargé pendant le parsing HTML,
+     avant tous les scripts defer. Garantit qu'aucun
+     événement de chargement n'est jamais manqué,
+     quelle que soit la vitesse du réseau ou du cache.
+     ═══════════════════════════════════════════════ -->
+<script>
+window.App = (function () {
+  'use strict';
+  var _flags = {};      /* événements déjà reçus   */
+  var _queues = {};     /* callbacks en attente     */
+
+  function _fire(key) {
+    if (_flags[key]) return;
+    _flags[key] = true;
+    console.log('[App.Boot] ' + key + ' ✅');
+    (_queues[key] || []).forEach(function (cb) {
+      try { cb(); } catch (e) { console.error('[App.Boot] callback error', e); }
+    });
+    delete _queues[key];
+  }
+
+  /* Appelle cb() immédiatement si key déjà prêt, sinon le met en queue */
+  function whenReady(key, cb) {
+    if (_flags[key]) {
+      try { cb(); } catch (e) { console.error('[App.Boot] whenReady error', e); }
+    } else {
+      _queues[key] = _queues[key] || [];
+      _queues[key].push(cb);
+    }
+  }
+
+  /* Intercepter les événements natifs de l'app */
+  document.addEventListener('app:data-ready',  function () { _fire('data');   }, { once: true });
+  document.addEventListener('tts:voices-ready', function () { _fire('voices'); }, { once: true });
+
+  return {
+    whenReady: whenReady,
+    isReady:   function (key) { return !!_flags[key]; }
+  };
+}());
+
+/* ── Version unique ── */
+window.APP_VERSION = 'iota 18';
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-app-version]').forEach(function (el) {
+    el.textContent = window.APP_VERSION;
+  });
+});
+</script>
+
+
+<!-- ═══════════════════════════════════════════════
+     MODAL : TENSE PICKER
+     ═══════════════════════════════════════════════ -->
+<div id="tensePickerModal" class="modal-overlay" style="display:none" onclick="closeTensePicker(event)">
+  <div class="modal-box tense-picker-box" onclick="event.stopPropagation()">
+
+    <div class="modal-header">
+      <span class="modal-title">Choisir un temps</span>
+      <button class="modal-close-btn" onclick="closeTensePicker()">✕</button>
+    </div>
+
+    <div class="modal-body tense-picker-body">
+
+      <div class="tense-picker-group">
+        <div class="tense-picker-group-label"><span class="tpg-badge tpg-b1">Básico 1</span></div>
+        <div class="tense-picker-grid">
+          <button class="tense-picker-btn active" data-tense="present" onclick="switchTense('present')">
+            <span class="tpb-pt">Presente do Indicativo</span>
+            <span class="tpb-fr" data-i18n="tense_btn_present">Présent de l'indicatif</span>
+          </button>
+          <button class="tense-picker-btn" data-tense="pret" onclick="switchTense('pret')">
+            <span class="tpb-pt">Pretérito Perfeito Simples</span>
+            <span class="tpb-fr" data-i18n="tense_btn_pret">Passé / Passé composé</span>
+          </button>
+          <button class="tense-picker-btn" data-tense="imperf" onclick="switchTense('imperf')">
+            <span class="tpb-pt">Pretérito Imperfeito</span>
+            <span class="tpb-fr" data-i18n="tense_btn_imperf">Imparfait</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="tense-picker-group">
+        <div class="tense-picker-group-label"><span class="tpg-badge tpg-b2">Básico 2</span></div>
+        <div class="tense-picker-grid">
+          <button class="tense-picker-btn" data-tense="fut" onclick="switchTense('fut')">
+            <span class="tpb-pt">Futuro do Presente</span>
+            <span class="tpb-fr" data-i18n="tense_btn_fut">Futur simple</span>
+          </button>
+          <button class="tense-picker-btn" data-tense="cond" onclick="switchTense('cond')">
+            <span class="tpb-pt">Futuro do Pretérito</span>
+            <span class="tpb-fr" data-i18n="tense_btn_cond">Conditionnel</span>
+          </button>
+          <button class="tense-picker-btn" data-tense="subj" onclick="switchTense('subj')">
+            <span class="tpb-pt">Presente do Subjuntivo</span>
+            <span class="tpb-fr" data-i18n="tense_btn_subj">Subjonctif</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+</div><!-- /appShell -->
+<!-- ═══════════════════════════════════════════════
+     SCRIPTS — ordre : data → core → ui → init
+     ═══════════════════════════════════════════════ -->
+<script defer src="js/i18n.js?v=iota18"></script>
+<script defer src="js/data.js?v=iota18"></script>
+<script defer src="js/tts.js?v=iota18"></script>
+<script defer src="js/core.js?v=iota18"></script>
+<script defer src="js/engine.js?v=iota18"></script>
+<script defer src="js/ui-selection.js?v=iota18"></script>
+<script defer src="js/ui-ref.js?v=iota18"></script>
+<script defer src="js/voice.js?v=iota18"></script>
+<script defer src="js/stats.js?v=iota18"></script>
+<script defer src="js/stats-ui.js?v=iota18"></script>
+<script defer src="js/ecoute.js?v=iota18"></script>
+<script defer src="js/router.js?v=iota18"></script>
+<script defer src="js/splash.js?v=iota18"></script>
+<script defer src="js/mode-erreurs.js?v=iota18"></script>
+<script defer src="js/init.js?v=iota18"></script>
+
+<!-- Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js?v=' + (window.APP_VERSION||'').replace(/\s/g,''))
+    .then(function(r) { console.log('[SW] Registered:', r.scope); })
+    .catch(function(e) { console.warn('[SW] Registration failed:', e); });
+}
+</script>
+</body>
+</html>
