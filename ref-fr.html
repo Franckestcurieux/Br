@@ -87,14 +87,14 @@ body{font-family:'Crimson Pro',Georgia,serif;background:var(--cream);color:var(-
 /* ============================================================
    BOOK CONTAINER
    ============================================================ */
-.book{display:none;}
-.book.visible{display:block;}
+.book{display:none;}.book.visible{padding-top:var(--nav-h);}
+
 
 /* ============================================================
    SECTION NAV (shared by both books)
    ============================================================ */
 .section-nav{
-  position:sticky;top:var(--switcher-h);z-index:200;
+  position:fixed;top:0;left:0;right:0;z-index:200;
   background:var(--midnight);
   border-bottom:1px solid rgba(201,168,76,.2);
   height:var(--nav-h);display:flex;align-items:center;
@@ -223,7 +223,7 @@ tr.even td, table.ctab tr:nth-child(even) td{background:rgba(220,210,195,.45);}
    ============================================================ */
 .chapter{position:relative;}
 .ch-header{
-  position:sticky;top:calc(var(--switcher-h) + var(--nav-h));
+  position:sticky;top:var(--nav-h);
   z-index:100;height:var(--ch-h);overflow:hidden;
   display:flex;align-items:center;
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
