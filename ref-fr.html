@@ -87,14 +87,14 @@ body{font-family:'Crimson Pro',Georgia,serif;background:var(--cream);color:var(-
 /* ============================================================
    BOOK CONTAINER
    ============================================================ */
-.book{display:none;}.book.visible{padding-top:var(--nav-h);}
+.book{display:none;}.book.visible{display:block;padding-top:var(--nav-h);}
 
 
 /* ============================================================
    SECTION NAV (shared by both books)
    ============================================================ */
 .section-nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
+  position:sticky;top:0;z-index:200;
   background:var(--midnight);
   border-bottom:1px solid rgba(201,168,76,.2);
   height:var(--nav-h);display:flex;align-items:center;
