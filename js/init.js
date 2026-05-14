@@ -462,8 +462,8 @@ var REF_TEXTS = {
   },
   'pt-BR': {
     title: "O Anti-Manual",
-    sub: "Por enquanto, apenas em francês",
-    desc: "O Anti-Manual do português brasileiro não começa pelas regras gramaticais. Começa pelo que você já sabe — os padrões da sua própria língua — e constrói pontes em direção ao brasileiro. Mas partindo de outra língua.\n\nEste Anti-Manual foi feito do francês para o português. Para um falante nativo do português, ele tem uma curiosidade de espelho: ver de fora como a sua língua aparece àquele que a aprende.\n\nPor enquanto, o Anti-Manual existe apenas em francês, porque é a língua materna do autor. Ele está trabalhando nisso — com carinho."
+    sub: "Uma nota para falantes nativos",
+    desc: "Este aplicativo foi criado para quem aprende o português brasileiro a partir de outra língua — francês, inglês, alemão. O Anti-Manual não existe em português, porque ele é justamente uma ponte entre línguas, e não se constrói uma ponte para a própria casa.\n\nMas se você é brasileiro e quer praticar a conjugação — seja como estudante ou simplesmente por prazer — o aplicativo funciona perfeitamente para isso. Os verbos são os mesmos para todo mundo."
   },
   'da': {
     title: "Anti-Manualen",
