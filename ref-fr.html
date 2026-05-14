@@ -116,24 +116,30 @@ body{font-family:'Crimson Pro',Georgia,serif;background:var(--cream);color:var(-
    ANTI-MANUEL — SECTIONS
    ============================================================ */
 .am-section{padding:4.5rem 1.5rem;max-width:840px;margin:0 auto;}
-.am-section.alt-bg{background:white;max-width:100%;position:relative;overflow:hidden;}
-.alt-bg::before{
-  content:'';
-  position:absolute;
-  inset:-40px 0;
-  background:radial-gradient(ellipse 80% 60% at 15% 40%, rgba(201,168,76,.06) 0%, transparent 65%),
-             radial-gradient(ellipse 60% 50% at 85% 70%, rgba(13,27,42,.04) 0%, transparent 60%);
-  pointer-events:none;
-  z-index:0;
-}
-.alt-bg > .am-inner{position:relative;z-index:1;}
+.am-section.alt-bg{background:white;max-width:100%;}
 .am-section.alt-bg .am-inner{max-width:840px;margin:0 auto;padding:4.5rem 1.5rem;}
 .am-sn{font-family:'Cormorant Garamond',serif;font-size:4.2rem;font-weight:700;color:var(--cream-dark);line-height:1;margin-bottom:-.7rem;letter-spacing:-.02em;}
 .alt-bg .am-sn{color:#f0f0f0;}
-.am-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
+.am-head{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;
+  position:sticky;top:var(--switcher-h);z-index:10;
+  overflow:hidden;
+  padding:.8rem 0 .5rem;
+  background:inherit;
+}
+.am-head::before{
+  content:'';
+  position:absolute;
+  inset:-40px 0;
+  background:radial-gradient(ellipse 120% 80% at 10% 50%, rgba(201,168,76,.09) 0%, transparent 55%),
+             radial-gradient(ellipse 80% 60% at 90% 30%, rgba(13,27,42,.06) 0%, transparent 50%);
+  pointer-events:none;
+  z-index:-1;
+}
+.am-head > div,.am-head > button,.am-head > h2{position:relative;z-index:1;}
 h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--midnight);margin-bottom:.4rem;line-height:1.2;}
 h2 em{font-style:italic;color:var(--gold);}
-.slang{font-size:.75rem;color:var(--text-light);letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.8rem;padding-bottom:.8rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.slang{font-size:.82rem;color:var(--text-light);letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.8rem;padding-bottom:.8rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
 p{margin-bottom:1rem;}
 h3{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;color:var(--midnight);margin:2rem 0 .7rem;}
 h4{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--text-light);margin:1.3rem 0 .5rem;}
@@ -141,7 +147,7 @@ h4{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;co
 /* Cross-link button */
 .xlink{
   display:inline-flex;align-items:center;gap:.4rem;
-  font-family:'Cormorant Garamond',serif;font-size:.75rem;
+  font-family:'Cormorant Garamond',serif;font-size:.82rem;
   color:var(--gold);border:1px solid rgba(201,168,76,.35);
   padding:.2rem .7rem;border-radius:4px;cursor:pointer;
   background:rgba(201,168,76,.07);transition:all .2s;
@@ -173,7 +179,7 @@ h4{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;co
 /* ============================================================
    BADGES & CALLOUTS
    ============================================================ */
-.badge{display:inline-flex;align-items:center;padding:.12rem .55rem;border-radius:20px;font-size:.72rem;font-family:'Cormorant Garamond',serif;letter-spacing:.04em;white-space:nowrap;}
+.badge{display:inline-flex;align-items:center;padding:.12rem .55rem;border-radius:20px;font-size:.82rem;font-family:'Cormorant Garamond',serif;letter-spacing:.04em;white-space:nowrap;}
 .bg{background:var(--green-light);color:var(--green);}
 .ba{background:var(--amber-light);color:var(--amber);}
 .br{background:var(--red-light);color:var(--red);}
@@ -188,7 +194,7 @@ h4{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;co
    TABLES (shared)
    ============================================================ */
 .tw{overflow-x:auto;margin:1.1rem 0;-webkit-overflow-scrolling:touch;max-width:100%;}
-.tense-tag{display:inline-block;font-size:.68rem;background:rgba(201,168,76,.15);color:var(--amber);border:1px solid rgba(201,168,76,.3);border-radius:4px;padding:1px 5px;margin-left:4px;font-style:normal;white-space:nowrap;vertical-align:middle;}
+.tense-tag{display:inline-block;font-size:.78rem;background:rgba(201,168,76,.15);color:var(--amber);border:1px solid rgba(201,168,76,.3);border-radius:4px;padding:1px 5px;margin-left:4px;font-style:normal;white-space:nowrap;vertical-align:middle;}
 table.ctab{width:100%;border-collapse:collapse;font-size:.88rem;}
 table.ctab th{background:var(--midnight);color:var(--gold);font-family:'Cormorant Garamond',serif;font-weight:600;padding:.6rem .85rem;text-align:left;font-size:.82rem;letter-spacing:.04em;}
 table.ctab td{padding:.5rem .85rem;border-bottom:1px solid var(--border);vertical-align:top;}
@@ -251,7 +257,7 @@ tr.even td, table.ctab tr:nth-child(even) td{background:rgba(220,210,195,.45);}
 .formation{background:var(--midnight);color:white;border-radius:8px;padding:1.4rem;margin:1.4rem 0;}
 .formation-title{font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;opacity:.9;}
 .form-group{margin:.3rem 0 .9rem;}
-.form-group-label{color:var(--gold);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.45rem;opacity:.8;}
+.form-group-label{color:var(--gold);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.45rem;opacity:.8;}
 .form-rs-table{width:100%;border-collapse:collapse;}
 .form-rs-table th{color:rgba(255,255,255,.38);font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .45rem;border-bottom:1px solid rgba(255,255,255,.1);text-align:left;font-weight:400;}
 .form-rs-table td{padding:.25rem .45rem;font-size:.88rem;vertical-align:middle;}
@@ -266,7 +272,7 @@ tr.even td, table.ctab tr:nth-child(even) td{background:rgba(220,210,195,.45);}
 .td-form{color:white;font-style:italic;}
 .td-form strong{color:var(--gold-light);}
 .form-irreg{margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.1);}
-.form-irreg-title{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.33);margin-bottom:.5rem;}
+.form-irreg-title{font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.33);margin-bottom:.5rem;}
 .irreg-list{display:flex;flex-wrap:wrap;gap:.35rem;}
 .irreg-item{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.18);border-radius:4px;padding:.18rem .55rem;font-size:.82rem;font-style:italic;}
 .irreg-item strong{color:var(--gold);margin-right:.25rem;font-style:normal;}
@@ -289,8 +295,8 @@ footer span{color:var(--gold);}
   .ch-content{gap:.9rem;padding:0 1rem;}
   .ch-btn{width:1.85rem;height:1.85rem;}
   .ch-inner,.am-section{padding:2rem 0.65rem;}
-  .ctab,.cg table{font-size:.75rem;}
-  .tw{font-size:.75rem;}
+  .ctab,.cg table{font-size:.82rem;}
+  .tw{font-size:.82rem;}
   .alt-bg > .am-inner{padding:2rem 0.65rem;}
   body{padding:0;}
   h2{font-size:1.75rem;}
@@ -519,9 +525,9 @@ footer span{color:var(--gold);}
 <div><h2>Conditionnel et politesse en <em>français</em></h2><div class="slang">&#127467;&#127479; Stable à l'oral</div></div>
 <button class="xlink" onclick="goToFiche('ch11-a')">&#128203; Fiche Ch11</button>
 </div>
-<p><strong>Protase</strong> = la condition (proposition en "si"). <strong>Apodose</strong> = la conséquence. Structure française : protase à l'imparfait, apodose au conditionnel.</p>
+<p>Structure française : <strong>[Si]</strong> à l'imparfait → <strong>[Alors]</strong> au conditionnel.</p>
 <div class="exblock">
-<div class="exrow"><span class="exlang">&#127467;&#127479;</span><span class="extext">Si j'avais de l'argent [protase], je voyagerais [apodose].</span></div>
+<div class="exrow"><span class="exlang">&#127467;&#127479;</span><span class="extext"><strong>[Si]</strong> j'avais de l'argent, <strong>[Alors]</strong> je voyagerais.</span></div>
 <div class="exrow"><span class="exlang">&#127467;&#127479;</span><span class="extext">Il a dit qu'il viendrait. (futur dans le passé)</span></div>
 <div class="exrow"><span class="exlang">&#127467;&#127479;</span><span class="extext">Je voudrais un café. (politesse — stable à l'oral)</span></div>
 <div class="exrow"><span class="exlang">&#127467;&#127479;</span><span class="extext">Ce ne serait pas correct. (atténuation)</span></div>
@@ -539,7 +545,7 @@ footer span{color:var(--gold);}
 <thead><tr><th>Usage</th><th>BP soutenu</th><th>BP oral courant</th></tr></thead>
 <tbody>
 <tr><td>Politesse</td><td><em>gostaria</em> — je voudrais <span class="tense-tag">condic. simples</span></td><td><em>queria</em> — je voudrais <span class="tense-tag">imperfeito</span></td></tr>
-<tr><td>Hypothèse (apodose)</td><td><em>viajaria</em> — je voyagerais <span class="tense-tag">condic. simples</span></td><td><em>viajava</em> — je voyagerais <span class="tense-tag">imperfeito</span></td></tr>
+<tr><td>Hypothèse [Alors]</td><td><em>viajaria</em> — je voyagerais <span class="tense-tag">condic. simples</span></td><td><em>viajava</em> — je voyagerais <span class="tense-tag">imperfeito</span></td></tr>
 <tr><td>Futur dans le passé</td><td><em>viria</em> — il viendrait <span class="tense-tag">condic. simples</span></td><td><em>viria</em> — stable <span class="tense-tag">condic. simples</span></td></tr>
 <tr><td>Probabilité passée</td><td><em>seriam umas 10h</em> — il devait être 10h <span class="tense-tag">condic. simples</span></td><td><em>seriam</em> — stable <span class="tense-tag">condic. simples</span></td></tr>
 </tbody></table></div>
@@ -680,9 +686,9 @@ footer span{color:var(--gold);}
 <thead><tr><th>Personne</th><th>Radical</th><th></th><th>Suffixe</th><th></th><th>Forme</th></tr></thead>
 <tbody>
 <tr><td class="td-pron">eu</td><td class="td-rad">com-</td><td class="td-plus">+</td><td class="td-suf">-o</td><td class="td-eq">=</td><td class="td-form"><strong>como</strong></td></tr>
-<tr><td class="td-pron">você / ele</td><td class="td-rad">com-</td><td class="td-plus">+</td><td class="td-suf">-e</td><td class="td-eq">=</td><td class="td-form"><strong>come</strong> <span style="color:rgba(255,255,255,.3);font-size:.76rem">(-a en -AR)</span></td></tr>
-<tr><td class="td-pron">nós</td><td class="td-rad">com-</td><td class="td-plus">+</td><td class="td-suf">-emos</td><td class="td-eq">=</td><td class="td-form"><strong>comemos</strong> <span style="color:rgba(255,255,255,.3);font-size:.76rem">(-amos)</span></td></tr>
-<tr><td class="td-pron">vocês / eles</td><td class="td-rad">com-</td><td class="td-plus">+</td><td class="td-suf">-em</td><td class="td-eq">=</td><td class="td-form"><strong>comem</strong> <span style="color:rgba(255,255,255,.3);font-size:.76rem">(-am)</span></td></tr>
+<tr><td class="td-pron">você / ele</td><td class="td-rad">com-</td><td class="td-plus">+</td><td class="td-suf">-e</td><td class="td-eq">=</td><td class="td-form"><strong>come</strong> <span style="color:rgba(255,255,255,.3);font-size:.82rem">(-a en -AR)</span></td></tr>
+<tr><td class="td-pron">nós</td><td class="td-rad">com-</td><td class="td-plus">+</td><td class="td-suf">-emos</td><td class="td-eq">=</td><td class="td-form"><strong>comemos</strong> <span style="color:rgba(255,255,255,.3);font-size:.82rem">(-amos)</span></td></tr>
+<tr><td class="td-pron">vocês / eles</td><td class="td-rad">com-</td><td class="td-plus">+</td><td class="td-suf">-em</td><td class="td-eq">=</td><td class="td-form"><strong>comem</strong> <span style="color:rgba(255,255,255,.3);font-size:.82rem">(-am)</span></td></tr>
 </tbody></table></div>
 <div class="form-group">
 <div class="form-group-label">-IR &nbsp;·&nbsp; partir → <em>part-</em> &nbsp;⚠ nós différent</div>
@@ -691,7 +697,7 @@ footer span{color:var(--gold);}
 <tbody>
 <tr><td class="td-pron">eu</td><td class="td-rad">part-</td><td class="td-plus">+</td><td class="td-suf">-o</td><td class="td-eq">=</td><td class="td-form"><strong>parto</strong></td></tr>
 <tr><td class="td-pron">você / ele</td><td class="td-rad">part-</td><td class="td-plus">+</td><td class="td-suf">-e</td><td class="td-eq">=</td><td class="td-form"><strong>parte</strong></td></tr>
-<tr><td class="td-pron">nós</td><td class="td-rad">part-</td><td class="td-plus">+</td><td class="td-suf">-imos</td><td class="td-eq">=</td><td class="td-form"><strong>partimos</strong> <span style="color:rgba(255,255,255,.3);font-size:.76rem">(-emos en -ER)</span></td></tr>
+<tr><td class="td-pron">nós</td><td class="td-rad">part-</td><td class="td-plus">+</td><td class="td-suf">-imos</td><td class="td-eq">=</td><td class="td-form"><strong>partimos</strong> <span style="color:rgba(255,255,255,.3);font-size:.82rem">(-emos en -ER)</span></td></tr>
 <tr><td class="td-pron">vocês / eles</td><td class="td-rad">part-</td><td class="td-plus">+</td><td class="td-suf">-em</td><td class="td-eq">=</td><td class="td-form"><strong>partem</strong></td></tr>
 </tbody></table></div>
 <div class="form-irreg">
@@ -1203,7 +1209,7 @@ footer span{color:var(--gold);}
 <div class="ch-header" id="fh13"><div class="ch-bg" data-speed="0.3"></div><div class="ch-overlay"></div>
 <div class="ch-content"><div class="ch-num">13</div><div class="ch-info">
 <div class="ch-tag">Subjonctif imparfait</div><div class="ch-title">Imperfeito do Subjuntivo</div>
-<div class="ch-subtitle">Protase conditionnelle — transfert direct</div>
+<div class="ch-subtitle">[Si]…[Alors] — transfert direct</div>
 </div><div class="ch-nav">
 <button class="ch-btn xbtn" onclick="goToAM('s9')" title="AM">&#128218; AM</button>
 <a href="#top" class="ch-btn">&#8679;</a><a href="#ch14-a" class="ch-btn">&#8681;</a>
@@ -1342,7 +1348,7 @@ footer span{color:var(--gold);}
 
 <footer>
 <p>&#127463;&#127479; Portugais Brésilien &middot; <span>Anti-Manuel</span> &amp; <span>Fiches grammaticales</span></p>
-<p style="margin-top:.4rem;font-size:.75rem;opacity:.45">Un seul fichier · Prêt pour le build</p>
+<p style="margin-top:.4rem;font-size:.82rem;opacity:.45">Un seul fichier · Prêt pour le build</p>
 </footer>
 <script>
 /* ============================================================
