@@ -332,19 +332,19 @@ footer span{color:var(--gold);}
      ============================================================ -->
 <div id="book-switcher" style="display:none">
   <span class="site-brand">&#127463;&#127479; Portugais Brésilien</span>
-  <div class="switcher-tabs">
+  <div class="switcher-tabs" style="display:none">
     <button class="stab active" id="tab-am" onclick="switchBook('am')">&#128218; Anti-Manuel</button>
     <button class="stab" id="tab-fiches" onclick="switchBook('fiches')">&#128203; Fiches</button>
   </div>
 </div>
 
 <div class="hero" id="top" style="display:none">
-<div class="hero-bg"></div>
-<div class="hero-content">
+<div class="hero-bg" style="display:none"></div>
+<div class="hero-content" style="display:none">
 <p class="hero-label">Portugais Brésilien</p>
 <h1>Anti-Manuel &amp;<br><em>Fiches grammaticales</em></h1>
 <p class="hero-sub">Partir de ce qu'on fait sans le savoir</p>
-<div class="hero-cta">
+<div class="hero-cta" style="display:none">
   <button class="hero-btn primary" onclick="switchBook('am');scrollToTop()">&#128218; Anti-Manuel</button>
   <button class="hero-btn secondary" onclick="switchBook('fiches');scrollToTop()">&#128203; Fiches grammaticales</button>
 </div>
@@ -1457,34 +1457,48 @@ function updateAll(){
     bg.style.transform = 'translate3d(0,' + (progress * speed) + 'px,0)';
   });
 
-  // 3. Anti-manuel nav: highlight active section
-  updateActiveNav('#am-nav', '[id^="s"]', topOffset);
-
-  // 3. Fiches nav: highlight active chapter
-  updateActiveNav('#fiches-nav', '[id$="-a"]', topOffset);
+  /* Nav updates gérées par IntersectionObserver — voir initNavObservers() */
 }
 
-function updateActiveNav(navSel, anchorSel, offset){
-  const nav = document.querySelector(navSel);
-  if(!nav) return;
-  const links = nav.querySelectorAll('a');
-  let current = '';
-  document.querySelectorAll(anchorSel).forEach(el => {
-    if(el.getBoundingClientRect().top <= offset + 12) current = el.id;
-  });
-  links.forEach(a => {
-    const href = a.getAttribute('href');
-    const active = href === '#' + current;
+function setNavActive(navSel, anchorId) {
+  var nav = document.querySelector(navSel);
+  if (!nav) return;
+  nav.querySelectorAll('a').forEach(function(a) {
+    var active = a.getAttribute('href') === '#' + anchorId;
     a.classList.toggle('active', active);
-    if(active) {
-      /* Centrer l'item actif — calcul relatif viewport pour fiabilité iOS */
+    if (active) {
+      /* Centrer l'item dans la barre — calcul getBoundingClientRect fiable iOS */
       var aRect   = a.getBoundingClientRect();
       var navRect = nav.getBoundingClientRect();
-      var relLeft = aRect.left - navRect.left; /* position visible de l'item */
-      var target  = nav.scrollLeft + relLeft - (nav.offsetWidth / 2) + (aRect.width / 2);
-      nav.scrollLeft = Math.max(0, target); /* direct, pas smooth (plus fiable iOS) */
+      var relLeft = aRect.left - navRect.left;
+      var target  = nav.scrollLeft + relLeft - nav.offsetWidth / 2 + aRect.width / 2;
+      nav.scrollLeft = Math.max(0, Math.round(target));
     }
   });
+}
+
+function initNavObservers() {
+  var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 36;
+  var opts = {
+    rootMargin: '-' + navH + 'px 0px -60% 0px',
+    threshold: 0
+  };
+
+  /* AM nav */
+  var amObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) setNavActive('#am-nav', e.target.id);
+    });
+  }, opts);
+  document.querySelectorAll('[id^="s"]').forEach(function(el) { amObs.observe(el); });
+
+  /* Fiches nav */
+  var fObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) setNavActive('#fiches-nav', e.target.id);
+    });
+  }, opts);
+  document.querySelectorAll('[id$="-a"]').forEach(function(el) { fObs.observe(el); });
 }
 
 
