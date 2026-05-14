@@ -589,3 +589,37 @@ document.addEventListener('i18n:change', function() {
     if (sp && sp.style.display !== 'none') buildStatsPanel();
   } catch(e) {}
 });
+
+/* ════════════════════════════════════════════
+   RETOUR SPLASH APRÈS 30 MIN D'INACTIVITÉ
+   ════════════════════════════════════════════ */
+(function() {
+  var IDLE_MS = 30 * 60 * 1000; /* 30 minutes */
+  var _idleTimer = null;
+
+  function resetIdleTimer() {
+    clearTimeout(_idleTimer);
+    _idleTimer = setTimeout(function() {
+      /* Fermer l'overlay Anti-Manuel si ouvert */
+      try { closeAntiManuel(); } catch(e) {}
+      /* Revenir au splash */
+      try {
+        var splash = document.getElementById('splash');
+        if (splash) {
+          splash.classList.remove('splash-exit');
+          splash.style.display = 'flex';
+          splash.style.opacity = '1';
+          /* Revenir à l'onglet Exercer */
+          if (typeof Router !== 'undefined') Router.go('exercer');
+        }
+      } catch(e) {}
+    }, IDLE_MS);
+  }
+
+  /* Écouter toute interaction utilisateur */
+  ['touchstart','touchend','click','keydown','scroll'].forEach(function(ev) {
+    document.addEventListener(ev, resetIdleTimer, { passive: true });
+  });
+
+  resetIdleTimer(); /* démarrer au chargement */
+})();

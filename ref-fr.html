@@ -21,7 +21,7 @@
   --switcher-h:48px; --nav-h:48px; --ch-h:155px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;}body,#book-fiches,#book-am{overflow-x:hidden;}
 body{font-family:'Crimson Pro',Georgia,serif;background:var(--cream);color:var(--text);font-size:18px;line-height:1.75;}
 
 /* ============================================================
@@ -216,7 +216,7 @@ tr.even td, table.ctab tr:nth-child(even) td{background:rgba(245,240,232,.5);}
 /* CHAPTER BODY */
 .ch-body{background:var(--cream);}
 .ch-body.alt{background:white;}
-.ch-inner{max-width:840px;margin:0 auto;padding:3rem 1.5rem;}
+.ch-inner{max-width:840px;margin:0 auto;padding:3rem 1.5rem;overflow-x:hidden;}
 .ch-body.alt tr:nth-child(even) td{background:rgba(248,248,248,.8);}
 
 /* CHAPTER COLORS */
@@ -1402,7 +1402,7 @@ function updateAll(){
   const sw = switcherH(), nv = navH(), ch = chH();
   const topOffset = sw + nv;
   // 1. Fiches: parallax — désactivé sur appareils lents, ignoré hors viewport
-  if (!isSlowDevice) {
+  if (false) { /* parallax désactivé — trop lourd en iframe iOS */
     const vpBottom = window.innerHeight + 300;
     document.querySelectorAll('.chapter').forEach(chapter => {
       const chRect = chapter.getBoundingClientRect();
@@ -1445,12 +1445,7 @@ function updateActiveNav(navSel, anchorSel, offset){
   });
 }
 
-/* Détection appareil lent ou préférence utilisateur */
-const _urlParams = new URLSearchParams(location.search);
-const isSlowDevice =
-  _urlParams.get('parallax') === '0' ||
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-  navigator.hardwareConcurrency < 4;
+
 
 let _rafPending = false;
 function _onScroll() {
