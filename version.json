@@ -1,0 +1,23 @@
+{
+  "version": "1.0.2",
+  "codename": "Verbos 1.0.2",
+  "date": "2026-05-15",
+  "critical": false,
+  "download_url": "https://franckestcurieux.github.io/Br/",
+  "changelog": [
+    {
+      "version": "1.0.2",
+      "codename": "Verbos 1.0.2",
+      "date": "2026-05-15",
+      "critical": false,
+      "notes": ["Correction de l'URL de mise à jour"]
+    },
+    {
+      "version": "1.0.0",
+      "codename": "Verbos 1.0.0",
+      "date": "2026-05-14",
+      "critical": false,
+      "notes": ["Version stable initiale — Verbos 1.0"]
+    }
+  ]
+}

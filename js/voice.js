@@ -188,6 +188,15 @@ function updateVoiceInstallBtn() {
   var lbl  = document.getElementById('voiceInstallBtnLabel');
   var test = document.getElementById('voiceTestBtn');
   if (!btn || !lbl) return;
+
+  /* En mode Swift : AVSpeech toujours disponible */
+  if (typeof TTS !== 'undefined' && TTS.isNativeSwift && TTS.isNativeSwift()) {
+    lbl.textContent = '✅ Voix neurale Apple';
+    btn.classList.add('voice-confirmed');
+    if (test) test.style.display = '';
+    return;
+  }
+
   var hasVoice = hasPtVoice() || voiceTestedOk;
   if (hasVoice) {
     lbl.textContent = I18n.tf('voice_installed', '✅ Voix brésilienne installée');
@@ -214,6 +223,27 @@ function toggleVoiceHelp() {
   var isOpen = panel.classList.toggle('open');
   btn.classList.toggle('active', isOpen);
   if (!isOpen) return;
+
+  /* ── Mode Swift : afficher les voix neurales disponibles ── */
+  if (typeof TTS !== 'undefined' && TTS.isNativeSwift && TTS.isNativeSwift()) {
+    var swiftVoices = window._swiftVoices || [];
+    var voiceListHtml = swiftVoices.length
+      ? swiftVoices.map(function(v) {
+          var badge = v.quality === 'premium'  ? ' <span style="color:#e8c84a;font-size:.75em">⭐ premium</span>'  :
+                      v.quality === 'enhanced' ? ' <span style="color:#aaa;font-size:.75em">★ enhanced</span>' : '';
+          return '<div style="padding:2px 0">✓ <strong>' + v.name + '</strong> ' +
+                 (v.language === 'pt-BR' ? '🇧🇷' : '🇵🇹') + badge + '</div>';
+        }).join('')
+      : '<em>Chargement des voix…</em>';
+
+    panel.innerHTML =
+      '<div class="vh-title">🍎 Voix neurales Apple — AVSpeechSynthesizer</div>' +
+      '<div class="vh-status vh-ok">✅ Moteur vocal natif Apple actif — qualité premium</div>' +
+      '<div class="vh-reassure">💡 Les voix ci-dessous sont celles disponibles sur cet iPhone/iPad.</div>' +
+      '<div class="vh-steps">' + voiceListHtml + '</div>' +
+      '<div class="vh-reassure" style="margin-top:6px">Pour ajouter des voix : <strong>Réglages → Accessibilité → Contenu énoncé → Voix → Portugais (Brésil)</strong></div>';
+    return;
+  }
 
   /* Construit le contenu à la demande */
   var lang     = I18n.getLang();

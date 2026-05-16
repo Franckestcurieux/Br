@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!-- Verbos — Português do Brasil
+     © Dr Franck Mignot 2026 — CC BY-NC-SA 4.0
+     https://creativecommons.org/licenses/by-nc-sa/4.0/
+     Version : Verbos 1.0.2 -->
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -16,11 +20,11 @@
 <link rel="apple-touch-icon" sizes="120x120" href="icon-120.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-<title>Conjugação — Português do Brasil</title>
+<title>Verbos — Português do Brasil</title>
 <meta name="description" content="Entraîne-toi à conjuguer les verbes portugais (Brésil) — présent, passé, imparfait. Application progressive pour apprenants francophones.">
-<link rel="stylesheet" href="style.css?v=iota47b">
-<link rel="stylesheet" href="stats.css?v=iota47b">
-<link rel="stylesheet" href="nav.css?v=iota47b">
+<link rel="stylesheet" href="style.css?v=1.0.2">
+<link rel="stylesheet" href="stats.css?v=1.0.2">
+<link rel="stylesheet" href="nav.css?v=1.0.2">
 </head>
 <body lang="fr">
 
@@ -54,6 +58,7 @@
     </div>
 
     <!-- Greeting Rio + bouton entrer -->
+    <div id="updateBanner" class="update-banner" style="display:none"></div>
     <div class="splash-greeting" id="splashGreeting"></div>
 
     <button class="splash-enter-btn" id="splashEnterBtn" onclick="Splash.enter()">
@@ -471,10 +476,21 @@
         <p class="voice-picker-legend" data-i18n="voice_picker_legend">✓ installée &nbsp;·&nbsp; ⬇ à télécharger &nbsp;·&nbsp; ★ voix système</p>
         <div class="voice-help-panel" id="voiceHelpPanel"></div>
       </div>
-    </div>
+
+      <!-- Mises à jour -->
+      <div class="config-section">
+        <div class="config-section-title">🔄 Mises à jour</div>
+        <div id="updateConfigPanel" class="update-config-panel">
+          <div class="upd-status upd-idle">— Vérification en cours…</div>
+          <div class="upd-version-local">Version installée : v1.0.0</div>
+        </div>
+        <button class="upd-check-btn" onclick="Updater.check(true).then(function(){ Updater.renderConfigPanel(); })">
+          🔍 Vérifier maintenant
+        </button>
+      </div>
 
     <div class="modal-footer">
-      <p class="modal-copyright">© Franck Mignot 2026 &nbsp;·&nbsp; <span style="font-size:.75rem;color:#aaa" data-app-version></span></p>
+      <p class="modal-copyright">© Dr Franck Mignot 2026 &nbsp;·&nbsp; <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" style="color:#aaa;text-decoration:none">CC BY-NC-SA 4.0</a> &nbsp;·&nbsp; <span style="font-size:.75rem;color:#aaa" data-app-version></span></p>
       <p class="modal-privacy">
         🔒 <strong data-i18n="privacy_title">Confidentialité</strong> —
         <span data-i18n="privacy_text">Cette application ne collecte, ne transmet et ne partage aucune donnée personnelle. Les statistiques d'exercice sont conservées uniquement sur votre appareil (stockage local). Aucun compte, aucun serveur, aucun suivi.</span>
@@ -684,7 +700,7 @@ window.App = (function () {
 }());
 
 /* ── Version unique ── */
-window.APP_VERSION = 'iota 47b — v1.0';
+window.APP_VERSION = 'Verbos 1.0.2';
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-app-version]').forEach(function (el) {
     el.textContent = window.APP_VERSION;
@@ -751,21 +767,22 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- ═══════════════════════════════════════════════
      SCRIPTS — ordre : data → core → ui → init
      ═══════════════════════════════════════════════ -->
-<script defer src="js/i18n.js?v=iota47b"></script>
-<script defer src="js/data.js?v=iota47b"></script>
-<script defer src="js/tts.js?v=iota47b"></script>
-<script defer src="js/core.js?v=iota47b"></script>
-<script defer src="js/engine.js?v=iota47b"></script>
-<script defer src="js/ui-selection.js?v=iota47b"></script>
-<script defer src="js/ui-ref.js?v=iota47b"></script>
-<script defer src="js/voice.js?v=iota47b"></script>
-<script defer src="js/stats.js?v=iota47b"></script>
-<script defer src="js/stats-ui.js?v=iota47b"></script>
-<script defer src="js/ecoute.js?v=iota47b"></script>
-<script defer src="js/router.js?v=iota47b"></script>
-<script defer src="js/splash.js?v=iota47b"></script>
-<script defer src="js/mode-erreurs.js?v=iota47b"></script>
-<script defer src="js/init.js?v=iota47b"></script>
+<script defer src="js/i18n.js?v=1.0.2"></script>
+<script defer src="js/data.js?v=1.0.2"></script>
+<script defer src="js/tts.js?v=1.0.2"></script>
+<script defer src="js/core.js?v=1.0.2"></script>
+<script defer src="js/engine.js?v=1.0.2"></script>
+<script defer src="js/ui-selection.js?v=1.0.2"></script>
+<script defer src="js/ui-ref.js?v=1.0.2"></script>
+<script defer src="js/voice.js?v=1.0.2"></script>
+<script defer src="js/stats.js?v=1.0.2"></script>
+<script defer src="js/stats-ui.js?v=1.0.2"></script>
+<script defer src="js/ecoute.js?v=1.0.2"></script>
+<script defer src="js/router.js?v=1.0.2"></script>
+<script defer src="js/updater.js?v=1.0.2"></script>
+<script defer src="js/splash.js?v=1.0.2"></script>
+<script defer src="js/mode-erreurs.js?v=1.0.2"></script>
+<script defer src="js/init.js?v=1.0.2"></script>
 
 <!-- Service Worker -->
 <script>

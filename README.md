@@ -272,3 +272,15 @@ Full policy: [`privacy.html`](./privacy.html)
 - 🇧🇷/🇵🇹 flags in picker to distinguish pt-BR from pt-PT ✅
 
 **Definitive fix:** Move to native Swift app using `AVSpeechSynthesizer` — all installed voices are then accessible. Planned for version 2.0.
+
+---
+
+## 📄 Licence
+
+**© Dr Franck Mignot 2026 — [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)**
+
+- **BY** : toute réutilisation doit citer l'auteur (Dr Franck Mignot)
+- **NC** : usage non commercial uniquement
+- **SA** : toute version dérivée doit être publiée sous la même licence
+
+Ce projet est partagé dans un esprit pédagogique. Si tu utilises ce travail, cite la source. Si tu l'améliores, partage dans les mêmes conditions.

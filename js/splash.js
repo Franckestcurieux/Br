@@ -1,11 +1,15 @@
 /**
- * splash.js — Epsilon 12
+ * splash.js — Verbos 1.0.2
+ * Logique d'inactivité 1h : si l'app a été utilisée il y a moins d'1h,
+ * la splash est bypassée automatiquement.
  * Langue auto-détectée. Greeting brésilien avec heure naturelle à Rio.
  */
 'use strict';
 
 var Splash = (function () {
 
+  var LS_LAST_USED = 'verbos_lastUsed';
+  var ONE_HOUR_MS  = 60 * 60 * 1000;
   var _dataReady  = false;
   var _voiceReady = false;
   var _langChosen = true;
@@ -109,7 +113,23 @@ var Splash = (function () {
      INIT
      ════════════════════════════════════════════ */
   function init() {
+    /* ── Check inactivité 1h : bypass splash si utilisé récemment ── */
+    var lastUsed = parseInt(localStorage.getItem(LS_LAST_USED) || '0', 10);
+    if (lastUsed && (Date.now() - lastUsed) < ONE_HOUR_MS) {
+      /* Bypass : on passe directement à l'app */
+      _entered = true;
+      var splash = document.getElementById('splash');
+      var shell  = document.getElementById('appShell');
+      if (splash) splash.style.display = 'none';
+      if (shell)  shell.classList.remove('app-shell-hidden');
+      /* Vérification update en arrière-plan quand même */
+      if (typeof Updater !== 'undefined') Updater.init();
+      return;
+    }
+
     _buildGreeting();
+    /* Lancer la vérification des mises à jour */
+    if (typeof Updater !== 'undefined') Updater.init();
 
     App.whenReady('data', function () {
       _setDot('spi-data', 'ok');
@@ -155,6 +175,8 @@ var Splash = (function () {
   function enter() {
     if (_entered) return;
     _entered = true;
+    /* Sauvegarder l'heure d'utilisation pour le bypass 1h */
+    localStorage.setItem(LS_LAST_USED, String(Date.now()));
     var splash = document.getElementById('splash');
     var shell  = document.getElementById('appShell');
     if (splash) splash.classList.add('splash-exit');

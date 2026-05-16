@@ -1,36 +1,38 @@
 /**
  * service-worker.js — Cache hors-ligne
- * Version : conjugacao-pt-epsilon12
+ * Version : verbos-1.0.2
  *
  * FIX : cache.addAll() rejette les réponses 304 (Python http.server).
  * On utilise des fetch individuels avec gestion d'erreur douce.
  */
 'use strict';
 
-var CACHE_NAME = 'conjugacao-pt-iota47b';
+var CACHE_NAME = 'verbos-1.0.2';
 
 var ASSETS_TO_CACHE = [
   './',
   './index.html',
   './ref-fr.html',
-  './style.css?v=iota47b',
-  './stats.css?v=iota47b',
-  './nav.css?v=iota47b',
+  './style.css?v=1.0.2',
+  './stats.css?v=1.0.2',
+  './nav.css?v=1.0.2',
   './manifest.json',
-  './js/data.js?v=iota47b',
-  './js/core.js?v=iota47b',
-  './js/engine.js?v=iota47b',
-  './js/ui-selection.js?v=iota47b',
-  './js/ui-ref.js?v=iota47b',
-  './js/voice.js?v=iota47b',
-  './js/stats.js?v=iota47b',
-  './js/stats-ui.js?v=iota47b',
-  './js/tts.js?v=iota47b',
-  './js/router.js?v=iota47b',
-  './js/splash.js?v=iota47b',
-  './js/mode-erreurs.js?v=iota47b',
-  './js/init.js?v=iota47b',
-  './js/i18n.js?v=iota47b',
+  './js/data.js?v=1.0.2',
+  './js/core.js?v=1.0.2',
+  './js/engine.js?v=1.0.2',
+  './js/ui-selection.js?v=1.0.2',
+  './js/ui-ref.js?v=1.0.2',
+  './js/voice.js?v=1.0.2',
+  './js/stats.js?v=1.0.2',
+  './js/stats-ui.js?v=1.0.2',
+  './js/tts.js?v=1.0.2',
+  './js/router.js?v=1.0.2',
+  './js/splash.js?v=1.0.2',
+  './js/mode-erreurs.js?v=1.0.2',
+  './js/init.js?v=1.0.2',
+  './js/i18n.js?v=1.0.2',
+  './js/updater.js?v=1.0.2',
+  './version.json',
   './data/verbs.json',
   './data/meta.json',
   './data/hints.json',

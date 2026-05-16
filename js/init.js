@@ -515,16 +515,46 @@ function refreshVoicePicker() {
 function updateVoicePicker() {
   var row = document.getElementById('voicePickerRow');
   var sel = document.getElementById('voicePickerSelect');
-  if (!row || !sel || !window.speechSynthesis) return;
+  if (!row || !sel) return;
+
+  /* ── Mode Swift : voix AVSpeechSynthesizer ── */
+  if (typeof TTS !== 'undefined' && TTS.isNativeSwift && TTS.isNativeSwift()) {
+    var swiftVoices = window._swiftVoices || [];
+    if (!swiftVoices.length) {
+      /* Demander les voix si pas encore reçues */
+      TTS.requestSwiftVoices();
+      return;
+    }
+    var savedId = '';
+    try { savedId = localStorage.getItem('verbos_swift_voice') || ''; } catch(_e) {}
+
+    /* Masquer l'avertissement Safari — non applicable en mode natif */
+    var warn = document.getElementById('voicePickerWarning');
+    if (warn) warn.style.display = 'none';
+
+    sel.innerHTML = swiftVoices.map(function(v) {
+      var qualBadge = v.quality === 'premium'  ? ' ⭐ premium'  :
+                      v.quality === 'enhanced' ? ' ★ enhanced'  : '';
+      var langTag   = v.language === 'pt-BR' ? ' 🇧🇷' : ' 🇵🇹';
+      var label     = '✓ ' + v.name + langTag + qualBadge;
+      var selected  = (v.identifier === savedId) ? ' selected' : '';
+      return '<option value="' + v.identifier + '"' + selected + '>' + label + '</option>';
+    }).join('');
+
+    row.style.display = 'flex';
+    return;
+  }
+
+  /* ── Mode Web Speech API classique ── */
+  if (!window.speechSynthesis) return;
 
   var voices = window.speechSynthesis.getVoices()
     .filter(function(v) { return v.lang.toLowerCase().startsWith('pt'); });
-  if (!voices.length) { return; } /* Ne pas cacher — tts:voices-ready mettra à jour */
+  if (!voices.length) { return; }
 
   var saved = '';
   try { saved = localStorage.getItem('conjugacao_voice') || ''; } catch(_e) {}
 
-  /* Détecter Apple (Safari/iOS) pour avertissement */
   var isApple = /iP(hone|ad|od)/.test(navigator.userAgent) ||
                 (navigator.userAgent.includes('Mac') && 'ontouchend' in document) ||
                 (/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent));
@@ -543,14 +573,25 @@ function updateVoicePicker() {
   row.style.display = 'flex';
 }
 
-function selectVoice(name) {
+function selectVoice(value) {
+  /* ── Mode Swift : value = identifier AVSpeech ── */
+  if (typeof TTS !== 'undefined' && TTS.isNativeSwift && TTS.isNativeSwift()) {
+    var swiftVoices = window._swiftVoices || [];
+    var sv = swiftVoices.find(function(v) { return v.identifier === value; });
+    TTS.selectSwiftVoice(value, sv ? sv.name : value);
+    /* Test immédiat */
+    TTS.speakDirect('Olá');
+    return;
+  }
+
+  /* ── Mode Web Speech API classique ── */
+  var name = value;
   try { localStorage.setItem('conjugacao_voice', name); } catch(_e) {}
-  var voices = window.speechSynthesis.getVoices();
+  var voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
   var v = voices.find(function(v) { return v.name === name; });
   if (v) {
-    window._selectedVoice = v;   /* session courante */
+    window._selectedVoice = v;
   }
-  /* Test immédiat */
   if (TTS && TTS.isEnabled()) {
     var utt = new SpeechSynthesisUtterance('Olá');
     utt.lang = 'pt-BR'; utt.rate = 0.85;
@@ -559,6 +600,12 @@ function selectVoice(name) {
     window.speechSynthesis.speak(utt);
   }
 }
+
+/* Voix Swift reçues depuis TTSBridge */
+document.addEventListener('tts:swift-voices-ready', function() {
+  try { updateVoicePicker(); } catch(_e) {}
+  try { updateVoiceInstallBtn(); } catch(_e) {}
+});
 
 document.addEventListener('tts:voices-ready', function() {
   /* Synchroniser _selectedVoice avec la voix TTS courante */

@@ -898,3 +898,101 @@
   text-align: left;
   white-space: pre-line;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   MISE À JOUR — Bandeau splash + Panel config
+   © Dr Franck Mignot 2026 — CC BY-NC-SA 4.0
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Bandeau sur la splash ── */
+.update-banner {
+  display: none;
+  margin: .6rem 1rem .3rem;
+  padding: .55rem .9rem;
+  border-radius: 10px;
+  font-size: .82rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  animation: fadeInBanner .4s ease;
+}
+@keyframes fadeInBanner { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+.update-banner--available { background: rgba(255,160,0,.18); border: 1.5px solid #ffa000; color: #ffa000; }
+.update-banner--critical  { background: rgba(229,57,53,.18);  border: 1.5px solid #e53935; color: #e53935; }
+.ub-icon  { font-size: 1.1rem; flex-shrink:0; }
+.ub-text  { flex: 1; }
+.ub-link  { color: inherit; text-decoration: underline; white-space: nowrap; }
+
+/* ── Panel config ── */
+.update-config-panel {
+  margin: .5rem 0 .6rem;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.upd-status       { font-size: .88rem; font-weight: 700; padding: .4rem .6rem; border-radius: 8px; }
+.upd-ok           { color: #4caf50; background: rgba(76,175,80,.1); }
+.upd-available    { color: #ffa000; background: rgba(255,160,0,.1); }
+.upd-critical     { color: #e53935; background: rgba(229,57,53,.1); }
+.upd-error        { color: #9e9e9e; background: rgba(158,158,158,.08); }
+.upd-idle         { color: #9e9e9e; }
+.upd-version-local{ font-size: .78rem; color: #aaa; }
+
+.upd-check-btn {
+  margin-top: .4rem;
+  background: #1a4a2e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: .55rem 1.6rem;
+  font-size: .85rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background .2s;
+  display: block;
+  width: fit-content;
+}
+.upd-check-btn:hover { background: #245e3a; }
+
+.upd-dl-btn {
+  display: inline-block;
+  margin-top: .4rem;
+  background: #e53935;
+  color: #fff;
+  border-radius: 8px;
+  padding: .5rem .9rem;
+  font-size: .84rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .2s;
+}
+.upd-dl-btn:hover { background: #c62828; }
+
+/* Changelog accordéon */
+.upd-changelog { margin-top: .7rem; }
+.upd-changelog summary {
+  font-size: .82rem;
+  color: #aaa;
+  cursor: pointer;
+  padding: .2rem 0;
+}
+.upd-cl-entry  { margin: .5rem 0 .3rem; padding-left: .5rem; border-left: 2px solid #333; }
+.upd-cl-header { font-size: .8rem; color: #ccc; margin-bottom: .25rem; }
+.upd-cl-notes  { margin: 0; padding-left: 1.2rem; }
+.upd-cl-notes li { font-size: .78rem; color: #aaa; margin-bottom: .15rem; }
+
+.upd-badge { display:inline-block; font-size:.65rem; padding:.1rem .35rem; border-radius:4px; margin-left:.4rem; vertical-align:middle; font-weight:700; }
+.upd-badge--crit  { background:#e53935; color:#fff; }
+.upd-badge--minor { background:#555; color:#ddd; }
+
+/* ── Verbos 1.0.2 : espace config-section ── */
+.config-page-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.voice-help-panel:empty {
+  display: none;
+}
